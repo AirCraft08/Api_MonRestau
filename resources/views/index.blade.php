@@ -7,6 +7,20 @@
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        #restaurants-map {
+            height: 400px;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid #ccc;
+        }
+    </style>
+
+
     <style>
         .fade-in {
             opacity: 0;
@@ -46,6 +60,9 @@
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('restaurants') ? 'active' : '' }}" href="{{ route('restaurants.index') }}">Restaurants</a>
                 </li>
+                <li>
+                    <a class="nav-link {{ Request::is('carte') ? 'active' : '' }}" href="{{ route('carte.index') }}">Carte</a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Mon compte
@@ -57,6 +74,9 @@
                         @else
                             <li><span class="dropdown-item-text">👋 Bonjour {{ Auth::user()->name }}</span></li>
                             <li>
+                                <a class="dropdown-item" href="{{ route('profile.show') }}">Mon Profil</a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     Déconnexion
@@ -66,6 +86,7 @@
                         @endguest
                     </ul>
                 </li>
+
             </ul>
         </div>
     </div>
@@ -106,40 +127,11 @@
         </div>
     @endif
 
-    <h2 class="mb-4 text-center">📍 Nos restaurants sur la carte</h2>
-    <div id="map" style="height: 500px; border-radius: 8px; border: 1px solid #ccc;" class="mb-5"></div>
-
 </div>
 
 
 <!-- Scripts Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Leaflet CSS & JS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const map = L.map('map').setView([45.75, 4.85], 12); // Centré sur Lyon
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-
-        @foreach($restaurants as $restaurant)
-        @if($restaurant->latitude && $restaurant->longitude)
-        L.marker([{{ $restaurant->latitude }}, {{ $restaurant->longitude }}])
-            .addTo(map)
-            .bindPopup(`
-                        <strong>{{ $restaurant->nom }}</strong><br>
-                        {{ $restaurant->prix_moyen }} € / repas<br>
-                        <a href='{{ route('restaurants.show', $restaurant->id) }}'>Voir détails</a>
-                    `);
-        @endif
-        @endforeach
-    });
-</script>
 
 
 </body>

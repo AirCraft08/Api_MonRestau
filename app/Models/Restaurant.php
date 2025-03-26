@@ -11,4 +11,14 @@ class Restaurant extends Model
         'latitude', 'longitude', 'contact_nom', 'contact_email', 'photo'
     ];
 
+    public function avis()
+    {
+        return $this->hasMany(Avis::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

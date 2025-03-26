@@ -36,6 +36,9 @@
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('restaurants') ? 'active' : '' }}" href="{{ route('restaurants.index') }}">Restaurants</a>
                 </li>
+                <li>
+                    <a class="nav-link {{ Request::is('carte') ? 'active' : '' }}" href="{{ route('carte.index') }}">Carte</a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Mon compte
@@ -47,6 +50,9 @@
                         @else
                             <li><span class="dropdown-item-text">👋 Bonjour {{ Auth::user()->name }}</span></li>
                             <li>
+                                <a class="dropdown-item" href="{{ route('profile.show') }}">Mon Profil</a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     Déconnexion
@@ -56,25 +62,32 @@
                         @endguest
                     </ul>
                 </li>
+
             </ul>
         </div>
     </div>
 </nav>
 
 
-<div class="text-end mb-4">
-    <a href="{{ route('restaurants.create') }}" class="btn btn-success">➕ Ajouter un restaurant</a>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h2 class="m-0">🍽️ Nos Restaurants</h2>
+        <a href="{{ route('restaurants.create') }}" class="btn btn-success">Ajouter un restaurant</a>
+    </div>
 </div>
+
+
+
 
 
 <!-- Contenu -->
 <div class="container mt-5">
-    <h2 class="mb-4 text-center">🍽️ Nos Restaurants</h2>
 
     @if($restaurants->isEmpty())
         <div class="alert alert-warning text-center">Aucun restaurant trouvé.</div>
     @else
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
             @foreach($restaurants as $restaurant)
                 <div class="col">
                     <div class="card h-100 shadow-sm">
@@ -84,6 +97,13 @@
                             <h5 class="card-title">{{ $restaurant->nom }}</h5>
                             <p class="card-text">{{ Str::limit($restaurant->description, 100) }}</p>
                             <a href="{{ route('restaurants.show', $restaurant->id) }}" class="btn btn-outline-primary mt-3">Voir détails</a>
+                            <p class="card-text">
+                                @if($restaurant->moyenne_note)
+                                    <strong>Note moyenne : {{ number_format($restaurant->moyenne_note, 1) }} ⭐</strong>
+                                @else
+                                    Pas d'avis
+                                @endif
+                            </p>
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">📍 {{ $restaurant->latitude }}, {{ $restaurant->longitude }}</li>

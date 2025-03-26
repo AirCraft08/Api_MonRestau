@@ -3,20 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $restaurant->nom }} - Détails | MonRestau</title>
+    <title>Carte des restaurants – MonRestau</title>
+
     <link rel="icon" href="{{ asset('images/logo.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .restaurant-image {
-            height: 400px;
-            object-fit: cover;
-            border-radius: 0.5rem;
-        }
-    </style>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
-<!-- Navbar -->
+<!-- Navbar identique à la page d’accueil -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url('/') }}">
@@ -69,106 +66,37 @@
     </div>
 </nav>
 
-<!-- Contenu -->
-<div class="container mt-5 mb-5">
-    <a href="{{ route('restaurants.index') }}" class="btn btn-outline-secondary mb-4">← Retour à la liste</a>
-
-    <div class="card shadow p-4">
-        @if ($restaurant->photo)
-            <img src="{{ asset('storage/' . $restaurant->photo) }}" class="restaurant-image w-100 mb-4" alt="{{ $restaurant->nom }}">
-        @else
-            <img src="{{ asset('images/default-restaurant.jpg') }}" class="restaurant-image w-100 mb-4" alt="Image par défaut">
-        @endif
-
-        <h1 class="mb-3">{{ $restaurant->nom }}</h1>
-
-        <p class="lead">{{ $restaurant->description }}</p>
-
-        <hr>
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <h5>📅 Date d'ouverture :</h5>
-                <p>{{ \Carbon\Carbon::parse($restaurant->date_ouverture)->format('d/m/Y') }}</p>
-            </div>
-            <div class="col-md-6">
-                <h5>💰 Prix moyen :</h5>
-                <p>{{ $restaurant->prix_moyen }} €</p>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <h5>📍 Localisation :</h5>
-                <p>Lat : {{ $restaurant->latitude }}<br>Lng : {{ $restaurant->longitude }}</p>
-
-                <h5 class="mt-4">📍 Emplacement sur la carte :</h5>
-                <div id="map" style="height: 400px; border-radius: 8px; border: 1px solid #ccc;"></div>
-            </div>
-            <div class="col-md-6">
-                <h5>👤 Contact :</h5>
-                <p>{{ $restaurant->contact_nom }}<br>{{ $restaurant->contact_email }}</p>
-            </div>
-        </div>
-    </div>
-
-    @if($restaurant->avis->count())
-        <p class="fw-bold">Note moyenne : {{ number_format($restaurant->avis->avg('note'), 1) }} ⭐</p>
-    @endif
-
-    @foreach($restaurant->avis as $avis)
-        <div class="border rounded p-2 mb-2">
-            <strong>{{ $avis->user->name }}</strong> – {{ $avis->note }} ⭐
-            <p class="mb-0">{{ $avis->commentaire }}</p>
-            <small class="text-muted">{{ $avis->created_at->diffForHumans() }}</small>
-        </div>
-    @endforeach
-
-
-@auth
-        <form method="POST" action="{{ route('avis.store', $restaurant->id) }}" class="mb-4">
-            @csrf
-            <div class="mb-2">
-                <label for="note">Note :</label>
-                <select name="note" id="note" class="form-select" required>
-                    <option value="">-- Sélectionner une note --</option>
-                    @for($i = 1; $i <= 5; $i++)
-                        <option value="{{ $i }}">{{ $i }} ⭐</option>
-                    @endfor
-                </select>
-            </div>
-            <div class="mb-2">
-                <label for="commentaire">Avis :</label>
-                <textarea name="commentaire" class="form-control" rows="3"></textarea>
-            </div>
-            <button class="btn btn-primary">Laisser un avis</button>
-        </form>
-    @endauth
-
+<!-- Carte -->
+<div class="container mt-4">
+    <h2 class="text-center mb-4">📍 Tous nos restaurants sur la carte</h2>
+    <div id="map" class="mb-5" style="height: 600px; border: 1px solid #ccc; border-radius: 8px;"></div>
 </div>
 
+<!-- JS Bootstrap + Leaflet -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Leaflet CSS & JS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        let lat = {{ $restaurant->latitude }};
-        let lng = {{ $restaurant->longitude }};
-
-        let map = L.map('map').setView([lat, lng], 16);
+        const map = L.map('map').setView([45.75, 4.85], 12); // Centré sur Lyon
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        L.marker([lat, lng]).addTo(map)
-            .bindPopup("{{ $restaurant->nom }}").openPopup();
+        @foreach($restaurants as $restaurant)
+        @if($restaurant->latitude && $restaurant->longitude)
+        L.marker([{{ $restaurant->latitude }}, {{ $restaurant->longitude }}])
+            .addTo(map)
+            .bindPopup(`
+                        <strong>{{ $restaurant->nom }}</strong><br>
+                        {{ $restaurant->prix_moyen }} € / repas<br>
+                        <a href='{{ route('restaurants.show', $restaurant->id) }}'>Voir détails</a>
+                    `);
+        @endif
+        @endforeach
     });
 </script>
-
 
 </body>
 </html>
