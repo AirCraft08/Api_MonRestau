@@ -1,96 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MonRestau</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
 
-
-@section('title')
-    Projet Météo - La station météo 2.0
-@endsection
-
-@section('content')
-<div class="container">
-    <div id="carouselExampleDark" class="carousel slide m-5" data-mdb-ride="carousel" data-mdb-carousel-init>
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active bg-secondary" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" class="bg-secondary" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" class="bg-secondary" aria-label="Slide 3"></button>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" width="30" class="d-inline-block align-text-top">
+            MonRestau
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link active" href="#">Accueil</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Restaurants</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Tarifs</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Options</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Autre action</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
-        <div class="carousel-inner rounded-5">
-            <div class="carousel-item active">
-                <div class="d-flex justify-content-between align-items-center px-5 gradient-custom" style="height: 230px">
-                    <div>
-                        <h2 class="text-dark display-2"><strong>23°C</strong></h2>
-                        <p class="text-dark mb-0">Coimbra, Portugal</p>
-                    </div>
-                    <div>
-                        <img src="{{ asset('img/ilu3.webp') }}"
-                             width="150px">
-                    </div>
+    </div>
+</nav>
+
+<!-- Présentation -->
+<div class="container mt-5 text-center">
+    <h1 class="mb-3">Bienvenue sur MonRestau 🍽️</h1>
+    <p class="lead">Découvrez les meilleurs restaurants de Lyon, leurs spécialités, leurs prix et les avis d'autres gourmets.</p>
+</div>
+
+<!-- Cartes de restaurants -->
+<div class="container mt-4">
+    <h2 class="mb-4">Nos restaurants recommandés</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Carte 1 -->
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ asset('images/chezmomo.jpg') }}" class="card-img-top" alt="Chez Momo">
+                <div class="card-body">
+                    <h5 class="card-title">Chez Momo</h5>
+                    <p class="card-text">🍜 Spécialités orientales<br>📍 12 Rue de Marseille, Lyon<br>💰 20€ / repas</p>
                 </div>
             </div>
-            <div class="carousel-item">
-                <div class="d-flex justify-content-around text-center align-items-center px-5 bg-body-tertiary"
-                     style="height: 230px">
-                    <div class="flex-column">
-                        <p class="small"><strong>21°C</strong></p>
-                        <i class="fas fa-sun fa-2x mb-3" style="color: #ddd;"></i>
-                        <p class="mb-0"><strong>12:00</strong></p>
-                        <p class="mb-0 text-muted" style="font-size: .65rem;">PM</p>
-                    </div>
-                    <div class="flex-column">
-                        <p class="small"><strong>2°C</strong></p>
-                        <i class="fas fa-sun fa-2x mb-3" style="color: #ddd;"></i>
-                        <p class="mb-0"><strong>1:00</strong></p>
-                        <p class="mb-0 text-muted" style="font-size: .65rem;">PM</p>
-                    </div>
-                    <div class="flex-column">
-                        <p class="small"><strong>20°C</strong></p>
-                        <i class="fas fa-cloud fa-2x mb-3" style="color: #ddd;"></i>
-                        <p class="mb-0"><strong>2:00</strong></p>
-                        <p class="mb-0 text-muted" style="font-size: .65rem;">PM</p>
-                    </div>
-                    <div class="flex-column">
-                        <p class="small"><strong>19°C</strong></p>
-                        <i class="fas fa-cloud fa-2x mb-3" style="color: #ddd;"></i>
-                        <p class="mb-0"><strong>3:00</strong></p>
-                        <p class="mb-0 text-muted" style="font-size: .65rem;">PM</p>
-                    </div>
-                    <div class="flex-column">
-                        <p class="small"><strong>18°C</strong></p>
-                        <i class="fas fa-cloud-showers-heavy fa-2x mb-3" style="color: #ddd;"></i>
-                        <p class="mb-0"><strong>4:00</strong></p>
-                        <p class="mb-0 text-muted" style="font-size: .65rem;">PM</p>
-                    </div>
+        </div>
+        <!-- Carte 2 -->
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ asset('images/petitbouchon.jpg') }}" class="card-img-top" alt="Le Petit Bouchon">
+                <div class="card-body">
+                    <h5 class="card-title">Le Petit Bouchon</h5>
+                    <p class="card-text">🥘 Cuisine lyonnaise<br>📍 7 Quai de Saône, Lyon<br>💰 30€ / repas</p>
                 </div>
             </div>
-            <div class="carousel-item">
-                <div class="d-flex justify-content-around text-center align-items-center px-5 bg-body-tertiary"
-                     style="height: 230px">
-                    <div class="flex-column">
-                        <p class="small"><strong>21°C</strong></p>
-                        <i class="fas fa-sun fa-2x mb-3" style="color: #ddd;"></i>
-                        <p class="mb-0"><strong>Mon</strong></p>
-                    </div>
-                    <div class="flex-column">
-                        <p class="small"><strong>20°C</strong></p>
-                        <i class="fas fa-sun fa-2x mb-3" style="color: #ddd;"></i>
-                        <p class="mb-0"><strong>Tue</strong></p>
-                    </div>
-                    <div class="flex-column">
-                        <p class="small"><strong>16°C</strong></p>
-                        <i class="fas fa-cloud fa-2x mb-3" style="color: #ddd;"></i>
-                        <p class="mb-0"><strong>Wed</strong></p>
-                    </div>
-                    <div class="flex-column">
-                        <p class="small"><strong>17°C</strong></p>
-                        <i class="fas fa-cloud fa-2x mb-3" style="color: #ddd;"></i>
-                        <p class="mb-0"><strong>Thu</strong></p>
-                    </div>
-                    <div class="flex-column">
-                        <p class="small"><strong>18°C</strong></p>
-                        <i class="fas fa-cloud-showers-heavy fa-2x mb-3" style="color: #ddd;"></i>
-                        <p class="mb-0"><strong>Fri</strong></p>
-                    </div>
+        </div>
+        <!-- Carte 3 -->
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ asset('images/sushizen.jpg') }}" class="card-img-top" alt="Sushi Zen">
+                <div class="card-body">
+                    <h5 class="card-title">Sushi Zen</h5>
+                    <p class="card-text">🍣 Japonais raffiné<br>📍 22 Rue Paul Bert, Lyon<br>💰 25€ / repas</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
+
+<!-- Scripts Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
