@@ -22,10 +22,9 @@
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link active" href="#">Accueil</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Restaurants</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Tarifs</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('restaurants.index') }}">Restaurants</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Options</a>
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Login</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#">Action</a></li>
                         <li><a class="dropdown-item" href="#">Autre action</a></li>
@@ -81,6 +80,7 @@
 
 <!-- Scripts Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </body>
 </html>
