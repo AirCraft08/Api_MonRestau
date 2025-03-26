@@ -12,6 +12,8 @@ class RestaurantController extends Controller
         return view('restaurants.create');
     }
 
+
+
     public function index(): \Illuminate\View\View
     {
         $restaurants = Restaurant::all(); // ou paginate() si tu veux une pagination

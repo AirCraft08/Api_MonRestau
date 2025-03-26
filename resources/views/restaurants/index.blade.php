@@ -22,18 +22,50 @@
             <img src="{{ asset('images/logo.png') }}" alt="Logo" width="30" class="d-inline-block align-text-top">
             MonRestau
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Accueil</a></li>
-                <li class="nav-item"><a class="nav-link active" href="{{ route('restaurants.index') }}">Restaurants</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('restaurants.create') }}">Ajouter</a></li>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <!-- Tous les liens à droite -->
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center gap-2">
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="{{ url('/') }}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('restaurants') ? 'active' : '' }}" href="{{ route('restaurants.index') }}">Restaurants</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Mon compte
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                        @guest
+                            <li><a class="dropdown-item" href="{{ route('login') }}">Se connecter</a></li>
+                            <li><a class="dropdown-item" href="{{ route('register') }}">S'inscrire</a></li>
+                        @else
+                            <li><span class="dropdown-item-text">👋 Bonjour {{ Auth::user()->name }}</span></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    Déconnexion
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+                            </li>
+                        @endguest
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
+
+
+<div class="text-end mb-4">
+    <a href="{{ route('restaurants.create') }}" class="btn btn-success">➕ Ajouter un restaurant</a>
+</div>
+
 
 <!-- Contenu -->
 <div class="container mt-5">
