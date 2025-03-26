@@ -113,7 +113,7 @@
     </div>
 
     @if($restaurant->avis->count())
-        <p class="fw-bold">Note moyenne : {{ number_format($restaurant->avis->avg('note'), 1) }} ⭐</p>
+        <p class="fw-bold" style="padding-top: 1rem">Note moyenne : {{ number_format($restaurant->avis->avg('note'), 1) }} ⭐</p>
     @endif
 
     @foreach($restaurant->avis as $avis)
@@ -129,7 +129,7 @@
         <form method="POST" action="{{ route('avis.store', $restaurant->id) }}" class="mb-4">
             @csrf
             <div class="mb-2">
-                <label for="note">Note :</label>
+                <label for="note" style="padding-top: 1rem">Note :</label>
                 <select name="note" id="note" class="form-select" required>
                     <option value="">-- Sélectionner une note --</option>
                     @for($i = 1; $i <= 5; $i++)

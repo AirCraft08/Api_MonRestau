@@ -52,8 +52,8 @@
                                 <br>Prix moyen : {{ $restaurant->prix_moyen }} €
                                 <br><a href="{{ route('restaurants.show', $restaurant->id) }}" class="btn btn-info btn-sm mt-2">Voir</a>
 
-                                <!-- Formulaire de suppression -->
-                                <form action="{{ route('profile.destroyRestaurant', $restaurant->id) }}" method="POST" style="display:inline;">
+                                <!-- Formulaire de suppression avec confirmation JS -->
+                                <form action="{{ route('profile.destroyRestaurant', $restaurant->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce restaurant ?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm mt-2">Supprimer</button>
@@ -79,8 +79,8 @@
                                 <br>{{ $a->commentaire }}
                                 <br><small>Le {{ $a->created_at->diffForHumans() }}</small>
 
-                                <!-- Formulaire de suppression de l'avis -->
-                                <form action="{{ route('profile.destroyAvis', $a->id) }}" method="POST" style="display:inline;">
+                                <!-- Formulaire de suppression de l'avis avec confirmation JS -->
+                                <form action="{{ route('profile.destroyAvis', $a->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet avis ?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm mt-2">Supprimer</button>

@@ -49,7 +49,7 @@ class RestaurantController extends Controller
             'longitude' => 'required|numeric',
             'contact_nom' => 'required|string|max:255',
             'contact_email' => 'required|email',
-            'photo' => 'nullable|image|max:2048', // Ou validation si tu utilises une image
+            'photo' => 'nullable|image|max:2048', // validation pour l'image
         ]);
 
         // Créer un nouveau restaurant
@@ -62,15 +62,20 @@ class RestaurantController extends Controller
         $restaurant->longitude = $request->longitude;
         $restaurant->contact_nom = $request->contact_nom;
         $restaurant->contact_email = $request->contact_email;
-        $restaurant->photo = $request->photo;
+
+        // Gérer l'image et la stocker
+        if ($request->hasFile('photo')) {
+            $restaurant->photo = $request->file('photo')->store('photos', 'public');
+        }
 
         // Associer l'utilisateur actuellement connecté
-        $restaurant->user_id = Auth::id(); // Ajoute l'ID de l'utilisateur connecté
+        $restaurant->user_id = Auth::id();
 
         $restaurant->save(); // Sauvegarde le restaurant
 
         return redirect()->route('restaurants.index')->with('success', 'Restaurant créé avec succès.');
     }
+
 
     // Afficher le formulaire de modification d'un restaurant
     public function edit($id)
