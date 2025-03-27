@@ -8,7 +8,6 @@
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <h4>Modifier mes informations</h4>
-
                 <form method="POST" action="{{ route('profile.update') }}">
                     @csrf
                     @method('PUT')
@@ -49,15 +48,11 @@
                         @foreach($restaurants as $restaurant)
                             <li class="list-group-item">
                                 <strong>{{ $restaurant->nom }}</strong>
-                                <br>Prix moyen : {{ $restaurant->prix_moyen }} €
+                                <br>Description : {{ $restaurant->description }}
                                 <br><a href="{{ route('restaurants.show', $restaurant->id) }}" class="btn btn-info btn-sm mt-2">Voir</a>
-
-                                <!-- Formulaire de suppression avec confirmation JS -->
-                                <form action="{{ route('profile.destroyRestaurant', $restaurant->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce restaurant ?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm mt-2">Supprimer</button>
-                                </form>
+                                <a href="{{ route('restaurants.edit', $restaurant->id) }}" class="btn btn-success btn-sm mt-2">Modifier</a>
+                                <!-- Supprimer le restaurant -->
+                                <button type="button" class="btn btn-danger btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#deleteRestaurantsModal" data-id="{{ $restaurant->id }}">Supprimer</button>
                             </li>
                         @endforeach
                     </ul>
@@ -77,14 +72,10 @@
                             <li class="list-group-item">
                                 <strong>Restaurant : {{ $a->restaurant->nom }}</strong> - {{ $a->note }} ⭐
                                 <br>{{ $a->commentaire }}
-                                <br><small>Le {{ $a->created_at->diffForHumans() }}</small>
+                                <br><small>{{ $a->created_at->diffForHumans() }}</small>
 
-                                <!-- Formulaire de suppression de l'avis avec confirmation JS -->
-                                <form action="{{ route('profile.destroyAvis', $a->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet avis ?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm mt-2">Supprimer</button>
-                                </form>
+                                <!-- Supprimer l'avis -->
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteAvisModal" data-id="{{ $a->id }}">Supprimer</button>
                             </li>
                         @endforeach
                     </ul>
@@ -92,4 +83,76 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de confirmation pour supprimer un restaurant -->
+    <div class="modal fade" id="deleteRestaurantsModal" tabindex="-1" aria-labelledby="deleteRestaurantsModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteRestaurantsModalLabel">Supprimer</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer ce restaurant?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non, fermer</button>
+                    <form id="confirmRestaurantsDeleteBtn" action="" method="POST" >
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Avis Modal -->
+    <div class="modal fade" id="deleteAvisModal" tabindex="-1" aria-labelledby="deleteAvisModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteAvisModalLabel">Supprimer</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer cet avis?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non, fermer</button>
+                    <form id="confirmAvisDeleteBtn" action="" method="POST" >
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.btn-danger[data-bs-toggle="modal"]').forEach(button => {
+            button.addEventListener('click', function() {
+                let itemId = this.getAttribute('data-id');
+                let targetModal = this.getAttribute('data-bs-target');
+
+                if (targetModal === "#deleteRestaurantsModal") {
+                    let shopForm = document.getElementById('confirmRestaurantsDeleteBtn');
+                    shopForm.action = '{{ route('restaurants.destroy', ':id') }}'.replace(':id', itemId);
+                }
+
+                //supression avis
+                else if (targetModal === "#deleteAvisModal") {
+                    let productForm = document.getElementById('confirmAvisDeleteBtn');
+                    productForm.action = '{{ route('avis.destroy', ':id') }}'.replace(':id', itemId);
+                }
+            });
+        });
+    </script>
+@endsection
+
+@section('scripts')
+
 @endsection

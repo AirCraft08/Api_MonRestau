@@ -90,6 +90,7 @@ class RestaurantController extends Controller
         return view('restaurants.edit', compact('restaurant'));
     }
 
+
     // Mettre à jour un restaurant dans la base de données
     public function update(Request $request, $id)
     {
@@ -100,34 +101,50 @@ class RestaurantController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        // Valide les données du formulaire
+        // Validation des données du formulaire
         $request->validate([
             'nom' => 'required|string|max:255',
             'description' => 'required|string',
             'prix_moyen' => 'required|numeric',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
+            'contact_nom' => 'required|string|max:255',
+            'contact_email' => 'required|email',
+            'photo' => 'nullable|image|max:2048',
         ]);
 
-        // Met à jour le restaurant
-        $restaurant->update($request->all());
+        // Mise à jour du restaurant
+        $restaurant->nom = $request->nom;
+        $restaurant->description = $request->description;
+        $restaurant->prix_moyen = $request->prix_moyen;
+        $restaurant->latitude = $request->latitude;
+        $restaurant->longitude = $request->longitude;
+        $restaurant->contact_nom = $request->contact_nom;
+        $restaurant->contact_email = $request->contact_email;
 
-        return redirect()->route('restaurants.index')->with('success', 'Restaurant modifié avec succès.');
+        // Si une nouvelle photo est téléchargée, on la stocke
+        if ($request->hasFile('photo')) {
+            $restaurant->photo = $request->file('photo')->store('photos', 'public');
+        }
+
+        $restaurant->save(); // Sauvegarder les modifications
+
+        return redirect()->route('restaurants.index')->with('success', 'Restaurant mis à jour avec succès.');
     }
+
 
     // Supprimer un restaurant de la base de données
     public function destroy($id)
     {
         $restaurant = Restaurant::findOrFail($id);
 
-        // Vérifie si l'utilisateur est le créateur du restaurant
         if ($restaurant->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
-        // Supprime le restaurant
         $restaurant->delete();
 
-        return redirect()->route('restaurants.index')->with('success', 'Restaurant supprimé avec succès.');
+        return redirect()->route('profile.show')->with('success', 'Restaurant supprimé avec succès.');
     }
+
 }

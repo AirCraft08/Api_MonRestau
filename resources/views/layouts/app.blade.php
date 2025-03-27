@@ -10,20 +10,26 @@
 <!-- Navbar commune à toutes les pages -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url('/') }}">MonRestau</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="{{ url('/') }}">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" width="30" class="d-inline-block align-text-top">
+            MonRestau
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <!-- Tous les liens à droite -->
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center gap-2">
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Accueil</a>
+                    <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="{{ url('/') }}">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('restaurants') ? 'active' : '' }}" href="{{ route('restaurants.index') }}">Restaurants</a>
+                    <a class="nav-link {{ Request::is('restaurants') ? 'active' : '' }}" href="{{ route('restaurants.index') }}">Restaurants</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('carte.index') }}">Carte</a>
+                <li>
+                    <a class="nav-link {{ Request::is('carte') ? 'active' : '' }}" href="{{ route('carte.index') }}">Carte</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -35,7 +41,17 @@
                             <li><a class="dropdown-item" href="{{ route('register') }}">S'inscrire</a></li>
                         @else
                             <li><span class="dropdown-item-text">👋 Bonjour {{ Auth::user()->name }}</span></li>
-                            <li><a class="dropdown-item" href="{{ route('profile.show') }}">Mon Profil</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('profile.show') }}">Mon Profil</a>
+                            </li>
+
+                            <!-- Vérifie si l'utilisateur est un admin -->
+                            @if(auth()->user()->role === 'admin')
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.index') }}">Panel Admin</a>
+                                </li>
+                            @endif
+
                             <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -50,6 +66,7 @@
         </div>
     </div>
 </nav>
+
 
 <!-- Contenu dynamique de chaque page -->
 <div class="container mt-4">

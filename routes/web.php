@@ -6,7 +6,8 @@ use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\CarteController;
 use App\Http\Controllers\AvisController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\AdminRestaurantController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,14 +39,23 @@ Route::post('/restaurants/{id}/avis', [AvisController::class, 'store'])->name('a
 // 🔐 Authentification Laravel UI (générée avec --auth)
 Auth::routes();
 
-Route::middleware(['auth'])->group(function () {
-    // Modifier un restaurant
-    Route::get('/restaurants/{id}/edit', [RestaurantController::class, 'edit'])->name('restaurants.edit');
-    Route::put('/restaurants/{id}', [RestaurantController::class, 'update'])->name('restaurants.update');
 
+// restaurants
+Route::middleware(['auth'])->group(function () {
+    // Route pour afficher le formulaire de modification d'un restaurant
+    Route::get('/restaurants/{id}/edit', [RestaurantController::class, 'edit'])->name('restaurants.edit');
+    // Route pour mettre à jour un restaurant
+    Route::put('/restaurants/{id}', [RestaurantController::class, 'update'])->name('restaurants.update');
     // Supprimer un restaurant
-    Route::delete('/restaurants/{id}', [RestaurantController::class, 'destroy'])->name('restaurants.destroy');
+    Route::delete('/restaurants/{id}/delete', [RestaurantController::class, 'destroy'])->name('restaurants.destroy');
 });
+
+//avis
+Route::middleware(['auth'])->group(function () {
+    // Route pour supprimer un avis
+    Route::delete('/avis/{id}/delete', [AvisController::class, 'destroy'])->name('avis.destroy');
+});
+
 
 Route::middleware(['auth'])->group(function () {
     // Page de profil de l'utilisateur
@@ -54,10 +64,16 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::middleware(['auth'])->group(function () {
-    // Supprimer un restaurant
-    Route::delete('/profile/restaurant/{id}', [UserController::class, 'destroyRestaurant'])->name('profile.destroyRestaurant');
 
-    // Supprimer un avis
-    Route::delete('/profile/avis/{id}', [UserController::class, 'destroyAvis'])->name('profile.destroyAvis');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/admin/restaurant/{restaurant}/edit', [AdminController::class, 'editRestaurant'])->name('admin.restaurant.edit');
+    Route::put('/admin/restaurant/{restaurant}', [AdminController::class, 'updateRestaurant'])->name('admin.restaurant.update');
+    Route::delete('/admin/restaurant/{restaurant}', [AdminController::class, 'deleteRestaurant'])->name('admin.restaurant.delete');
+    Route::get('/admin/avis/{avis}/edit', [AdminController::class, 'editAvis'])->name('admin.avis.edit');
+    Route::put('/admin/avis/{avis}', [AdminController::class, 'updateAvis'])->name('admin.avis.update');
+    Route::delete('/admin/avis/{avis}', [AdminController::class, 'deleteAvis'])->name('admin.avis.delete');
 });
+
+
+

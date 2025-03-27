@@ -52,6 +52,14 @@
                             <li>
                                 <a class="dropdown-item" href="{{ route('profile.show') }}">Mon Profil</a>
                             </li>
+
+                            <!-- Vérifie si l'utilisateur est un admin -->
+                            @if(auth()->user()->role === 'admin')
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.index') }}">Panel Admin</a>
+                                </li>
+                            @endif
+
                             <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -62,11 +70,11 @@
                         @endguest
                     </ul>
                 </li>
-
             </ul>
         </div>
     </div>
 </nav>
+
 
 
 

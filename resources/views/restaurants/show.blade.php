@@ -53,6 +53,14 @@
                             <li>
                                 <a class="dropdown-item" href="{{ route('profile.show') }}">Mon Profil</a>
                             </li>
+
+                            <!-- Vérifie si l'utilisateur est un admin -->
+                            @if(auth()->user()->role === 'admin')
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.index') }}">Panel Admin</a>
+                                </li>
+                            @endif
+
                             <li>
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -63,11 +71,11 @@
                         @endguest
                     </ul>
                 </li>
-
             </ul>
         </div>
     </div>
 </nav>
+
 
 <!-- Contenu -->
 <div class="container mt-5 mb-5">
@@ -120,7 +128,7 @@
         <div class="border rounded p-2 mb-2">
             <strong>{{ $avis->user->name }}</strong> – {{ $avis->note }} ⭐
             <p class="mb-0">{{ $avis->commentaire }}</p>
-            <small class="text-muted">{{ $avis->created_at->diffForHumans() }}</small>
+            <small class="text-muted">{{ $avis->created_at->diffForHumans() }} erhze</small>
         </div>
     @endforeach
 
