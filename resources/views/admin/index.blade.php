@@ -2,16 +2,10 @@
 
 @section('content')
     <div class="container mt-4">
+        <h2 class="text-center">Tableau de bord Admin</h2>
+        <p class="text-center">Gérez les restaurants et les avis depuis cette page.</p>
 
-        <!-- Titre principal de la page admin -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <h2 class="text-center">Tableau de bord Admin</h2>
-                <p class="text-center">Gérez les restaurants et les avis depuis cette page.</p>
-            </div>
-        </div>
-
-        <!-- Section Restaurants -->
+        <!-- Gestion des Restaurants -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card shadow-sm">
@@ -35,7 +29,13 @@
                                     <td>{{ $restaurant->nom }}</td>
                                     <td>{{ $restaurant->description }}</td>
                                     <td>
+                                        <!-- Lien pour voir le restaurant -->
+                                        <a href="{{ route('restaurants.show', $restaurant->id) }}" class="btn btn-info btn-sm">Voir</a>
+
+                                        <!-- Lien pour modifier le restaurant -->
                                         <a href="{{ route('admin.restaurant.edit', $restaurant->id) }}" class="btn btn-warning btn-sm">Modifier</a>
+
+                                        <!-- Formulaire pour supprimer le restaurant -->
                                         <form action="{{ route('admin.restaurant.delete', $restaurant->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <!-- Section Avis -->
+        <!-- Gestion des Avis -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card shadow-sm">
@@ -77,7 +77,6 @@
                                     <td>{{ $a->note }} ⭐</td>
                                     <td>{{ $a->commentaire }}</td>
                                     <td>
-                                        <a href="{{ route('admin.avis.edit', $a->id) }}" class="btn btn-warning btn-sm">Modifier</a>
                                         <form action="{{ route('admin.avis.delete', $a->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
@@ -94,4 +93,5 @@
         </div>
 
     </div>
+
 @endsection

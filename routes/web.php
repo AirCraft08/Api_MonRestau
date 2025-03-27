@@ -70,6 +70,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/restaurant/{restaurant}/edit', [AdminController::class, 'editRestaurant'])->name('admin.restaurant.edit');
     Route::put('/admin/restaurant/{restaurant}', [AdminController::class, 'updateRestaurant'])->name('admin.restaurant.update');
     Route::delete('/admin/restaurant/{restaurant}', [AdminController::class, 'deleteRestaurant'])->name('admin.restaurant.delete');
+
     Route::get('/admin/avis/{avis}/edit', [AdminController::class, 'editAvis'])->name('admin.avis.edit');
     Route::put('/admin/avis/{avis}', [AdminController::class, 'updateAvis'])->name('admin.avis.update');
     Route::delete('/admin/avis/{avis}', [AdminController::class, 'deleteAvis'])->name('admin.avis.delete');
