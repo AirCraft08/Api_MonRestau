@@ -16,13 +16,19 @@ class Avis extends Model
         'commentaire',
     ];
 
+    /**
+     * L’utilisateur qui a laissé l’avis
+     */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
+    /**
+     * Le restaurant concerné par l’avis
+     */
     public function restaurant()
     {
-        return $this->belongsTo(Restaurant::class);
+        return $this->belongsTo(Restaurant::class, 'restaurant_id');
     }
 }

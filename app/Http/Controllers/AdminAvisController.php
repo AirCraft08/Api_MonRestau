@@ -13,4 +13,13 @@ class AdminAvisController extends Controller
         return view('admin.avis.index', compact('avis'));
     }
 
+
+    public function destroy(string $id)
+    {
+        $avis = Avis::findOrFail($id);
+        $avis->delete();
+
+        return back()->with('success', "L'avis à bien été suprimé");
+    }
+
 }

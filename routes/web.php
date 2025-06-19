@@ -77,4 +77,42 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 
+//Routes app mobile
+use App\Http\Controllers\Api\RestaurantApiController;
+
+Route::get('/api/restaurants', [RestaurantApiController::class, 'index']);
+Route::get('/api/restaurants/{id}', [RestaurantApiController::class, 'show']);
+
+
+Route::get('/api/image/{filename}', function ($filename) {
+    $path = storage_path('app/public/photos/' . $filename);
+
+    if (!file_exists($path)) {
+        abort(404);
+    }
+
+    return response()->file($path);
+});
+
+
+
+use App\Http\Controllers\Api\ApiAvisController;
+use App\Http\Controllers\Api\ApiRestaurantController;
+
+// Route pour récupérer les avis d’un utilisateur (dans ApiAvisController)
+Route::get('/api/utilisateur/{userId}/avis', [ApiAvisController::class, 'getAvisByUserId']);
+
+// Route pour récupérer les restaurants créés par un utilisateur (dans ApiRestaurantController)
+Route::get('/api/utilisateur/{userId}/restaurants', [ApiRestaurantController::class, 'getRestaurantsByUserId']);
+
+
+Route::put('/restaurants/{id}', [ApiRestaurantController::class, 'update']);
+Route::put('/avis/{id}', [ApiAvisController::class, 'update']);
+
+
+
+Route::get('/test', function () {
+    return response()->json(['message' => 'API OK']);
+});
+
 
