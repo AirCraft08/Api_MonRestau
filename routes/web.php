@@ -8,6 +8,8 @@ use App\Http\Controllers\AvisController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminRestaurantController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Api\ApiRestaurantController;
+use App\Http\Controllers\Api\ApiAvisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,104 +17,71 @@ use App\Http\Controllers\AdminController;
 |--------------------------------------------------------------------------
 */
 
-// 🏠 Page d'accueil
+// Page d'accueil
 Route::get('/', [HomeController::class, 'index'])->name('index');
 
-// 🍽️ Liste des restaurants
+// Liste des restaurants
 Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
 
 // Carte
 Route::get('/carte', [CarteController::class, 'index'])->name('carte.index');
 
-// ➕ Créer un restaurant (accessible uniquement si connecté)
+// Création restaurant - accessible uniquement si connecté
 Route::middleware(['auth'])->group(function () {
     Route::get('/restaurants/create', [RestaurantController::class, 'create'])->name('restaurants.create');
     Route::post('/restaurants', [RestaurantController::class, 'store'])->name('restaurants.store');
 });
 
-// 🔎 Détails d’un restaurant
+// Détails d’un restaurant
 Route::get('/restaurants/{id}', [RestaurantController::class, 'show'])->name('restaurants.show');
 
-// Avis d'un restaurant
+// Ajouter un avis (auth obligatoire)
 Route::post('/restaurants/{id}/avis', [AvisController::class, 'store'])->name('avis.store')->middleware('auth');
 
-// 🔐 Authentification Laravel UI (générée avec --auth)
+// Authentification Laravel UI
 Auth::routes();
 
-
-// restaurants
+// Modification/Suppression restaurants - connecté uniquement
 Route::middleware(['auth'])->group(function () {
-    // Route pour afficher le formulaire de modification d'un restaurant
     Route::get('/restaurants/{id}/edit', [RestaurantController::class, 'edit'])->name('restaurants.edit');
-    // Route pour mettre à jour un restaurant
     Route::put('/restaurants/{id}', [RestaurantController::class, 'update'])->name('restaurants.update');
-    // Supprimer un restaurant
     Route::delete('/restaurants/{id}/delete', [RestaurantController::class, 'destroy'])->name('restaurants.destroy');
 });
 
-//avis
+// Suppression avis - connecté uniquement
 Route::middleware(['auth'])->group(function () {
-    // Route pour supprimer un avis
     Route::delete('/avis/{id}/delete', [AvisController::class, 'destroy'])->name('avis.destroy');
 });
 
-
+// Profil utilisateur
 Route::middleware(['auth'])->group(function () {
-    // Page de profil de l'utilisateur
     Route::get('/profile', [UserController::class, 'show'])->name('profile.show');
     Route::put('/profile', [UserController::class, 'update'])->name('profile.update');
 });
 
-
-
+// Admin routes - accès admin uniquement
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-    Route::get('/admin/restaurant/{restaurant}/edit', [AdminController::class, 'editRestaurant'])->name('admin.restaurant.edit');
-    Route::put('/admin/restaurant/{restaurant}', [AdminController::class, 'updateRestaurant'])->name('admin.restaurant.update');
-    Route::delete('/admin/restaurant/{restaurant}', [AdminController::class, 'deleteRestaurant'])->name('admin.restaurant.delete');
+    Route::get('/admin/restaurant/{restaurant}/edit', [AdminRestaurantController::class, 'editRestaurant'])->name('admin.restaurant.edit');
+    Route::put('/admin/restaurant/{restaurant}', [AdminRestaurantController::class, 'updateRestaurant'])->name('admin.restaurant.update');
+    Route::delete('/admin/restaurant/{restaurant}', [AdminRestaurantController::class, 'deleteRestaurant'])->name('admin.restaurant.delete');
 
     Route::get('/admin/avis/{avis}/edit', [AdminController::class, 'editAvis'])->name('admin.avis.edit');
     Route::put('/admin/avis/{avis}', [AdminController::class, 'updateAvis'])->name('admin.avis.update');
     Route::delete('/admin/avis/{avis}', [AdminController::class, 'deleteAvis'])->name('admin.avis.delete');
 });
 
+// API routes (pas besoin de csrf ici si tu veux)
+Route::prefix('api')->group(function () {
+    Route::get('/restaurants', [ApiRestaurantController::class, 'index']);
+    Route::get('/restaurants/{id}', [ApiRestaurantController::class, 'show']);
+    Route::put('/restaurants/{id}', [ApiRestaurantController::class, 'update']);
+    Route::get('/utilisateur/{userId}/restaurants', [ApiRestaurantController::class, 'getRestaurantsByUserId']);
 
-//Routes app mobile
-use App\Http\Controllers\Api\RestaurantApiController;
+    Route::get('/utilisateur/{userId}/avis', [ApiAvisController::class, 'getAvisByUserId']);
+    Route::put('/avis/{id}', [ApiAvisController::class, 'update']);
 
-Route::get('/api/restaurants', [RestaurantApiController::class, 'index']);
-Route::get('/api/restaurants/{id}', [RestaurantApiController::class, 'show']);
-
-
-Route::get('/api/image/{filename}', function ($filename) {
-    $path = storage_path('app/public/photos/' . $filename);
-
-    if (!file_exists($path)) {
-        abort(404);
-    }
-
-    return response()->file($path);
+    Route::get('/test', function () {
+        return response()->json(['message' => 'API fonctionne']);
+    });
 });
-
-
-
-use App\Http\Controllers\Api\ApiAvisController;
-use App\Http\Controllers\Api\ApiRestaurantController;
-
-// Route pour récupérer les avis d’un utilisateur (dans ApiAvisController)
-Route::get('/api/utilisateur/{userId}/avis', [ApiAvisController::class, 'getAvisByUserId']);
-
-// Route pour récupérer les restaurants créés par un utilisateur (dans ApiRestaurantController)
-Route::get('/api/utilisateur/{userId}/restaurants', [ApiRestaurantController::class, 'getRestaurantsByUserId']);
-
-
-Route::put('/restaurants/{id}', [ApiRestaurantController::class, 'update']);
-Route::put('/avis/{id}', [ApiAvisController::class, 'update']);
-
-
-
-Route::get('/test', function () {
-    return response()->json(['message' => 'API OK']);
-});
-
-

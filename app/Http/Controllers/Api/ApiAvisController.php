@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Avis;
+use Illuminate\Http\Request;
 
 class ApiAvisController extends Controller
 {
-    /**
-     * Retourne les avis laissés par un utilisateur, avec nom du restaurant et auteur.
-     */
     public function getAvisByUserId($userId)
     {
         $avis = Avis::with(['user', 'restaurant'])
@@ -28,5 +26,22 @@ class ApiAvisController extends Controller
             });
 
         return response()->json($avis);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $avis = Avis::findOrFail($id);
+
+        $validated = $request->validate([
+            'note' => 'required|integer|min:1|max:5',
+            'commentaire' => 'nullable|string',
+        ]);
+
+        $avis->update($validated);
+
+        return response()->json([
+            'message' => 'Avis mis à jour avec succès',
+            'avis' => $avis,
+        ]);
     }
 }
